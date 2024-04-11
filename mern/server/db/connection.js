@@ -17,6 +17,7 @@ try {
   console.log(
    "Pinged your deployment. You successfully connected to MongoDB!"
   );
+
 } catch(err) {
   console.error(err);
 }
