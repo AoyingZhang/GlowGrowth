@@ -1,52 +1,62 @@
 import React, { useState } from 'react';
 
 function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [user, setUser] = useState({email:'', password:''});
+   
+    const handleChange = (e) => {
+      setUser({
+          ...user,
+          [e.target.name]: e.target.value
+      })    
+    }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('/api/users/login', {
+    const handleSubmit = async (e) => {
+      e.preventDefault()
+      console.log(user)
+      const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
+        body: JSON.stringify(user)
       });
-      const data = await response.json();
+  
       if (response.ok) {
-        localStorage.setItem('token', data.token);
-        // Redirect user or do something upon successful login
+        console.log('Login successful');
       } else {
-        // Handle errors, e.g., show a message to the user
-        
+        console.log('Login failed');
       }
-    } catch (error) {
-      console.error('Error:', error);
     }
-  };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
-      <button type="submit">Login</button>
-    </form>
-  );
+    return (
+        <>
+            <h3>Enter email and password</h3>
+            <form>
+                <label>
+                    <input 
+                        type="email" 
+                        name="email"
+                        onChange={handleChange}
+                        placeholder="Email"
+                    />
+                </label>
+                <label>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        onChange={handleChange}
+                        placeholder="Password"
+                    />
+                </label>
+                <button 
+                    type="submit" 
+                    onClick={handleSubmit}
+                >
+                    Log in
+                </button>
+            </form>
+        </>
+    );
 }
 
 export default Login;
