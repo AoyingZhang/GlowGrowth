@@ -19,16 +19,6 @@ const router = createBrowserRouter([
     path: "/app",
     element: <App />,
   },
-  // {
-  //   path: "/edit/:id",
-  //   element: <Record />,
-  //   children: [
-  //     {
-  //       path: "",
-  //       element: <Record />,
-  //     },
-  //   ],
-  // },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

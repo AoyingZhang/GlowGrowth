@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, Box, Paper } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { TextField, Button, Typography, Container, Box, Paper, Alert } from '@mui/material';
+import { Link } from 'react-router-dom'; 
 
 function Login() {
   const [user, setUser] = useState({ email: '', password: '' });
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
     setUser({
@@ -22,11 +23,14 @@ function Login() {
       },
       body: JSON.stringify(user)
     });
-
+    console.log(response);
     if (response.ok) {
       console.log('Login successful');
+      setErrorMessage(''); // Clear any existing errors
     } else {
+      const result = await response.json(); // Assuming server sends back why login failed
       console.log('Login failed');
+      setErrorMessage(result.message || 'Login failed'); // Set the error message from response
     }
   };
 
@@ -77,8 +81,13 @@ function Login() {
             variant="outlined"
             sx={{ mt: 1 }}
           >
-            don't have an account yet? sign up
+            Don't have an account yet? Sign up
           </Button>
+          {errorMessage && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {errorMessage}
+            </Alert>
+          )}
         </Box>
       </Paper>
     </Container>

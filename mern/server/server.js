@@ -29,14 +29,19 @@ app.post('/api/login', async (req, res) => {
   // Check password
   if (user && user.password === password) {
     res.send({ message: 'Login successful' });
-  } else {
-    res.status(401).send({ message: 'Login failed' });
+  } else if (user){
+    res.status(401).send({ message: 'Password incorrect' });
+  }
+  else{
+    res.status(401).send({ message: 'User does not exist' });
   }
 });
 
 app.post('/api/signup', async (req, res) => {
   const { email, password } = req.body;
-
+  if(!email.includes('@')){
+    return res.status(400).send({ message: 'email is not in a valid format' });
+  }
   // Check if user already exists
   const existingUser = await User.findOne({ email });
   console.log(existingUser);
