@@ -1,57 +1,72 @@
 import React, { useState } from 'react';
-//import db from './../../../server/db/connection.js'
+
 function Signup() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  //const b = db;
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('/api/users/signup', {
+  const [user, setUser] = useState({username:'', email:'', password:''});
+   
+    const handleChange = (e) => {
+      setUser({
+          ...user,
+          [e.target.name]: e.target.value
+      })    
+    }
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      console.log(user);
+  
+      // Send user data to server
+      const response = await fetch('http://localhost:5050/api/signup', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
+        body: JSON.stringify(user)
       });
-      const data = await response.json();
+      console.log(response);
       if (response.ok) {
-        localStorage.setItem('token', data.token);
-        // Redirect user or do something upon successful login
+        console.log('SignUp successful');
       } else {
-        // Handle errors, e.g., show a message to the user
-        
+        console.log('SignUp failed');
       }
-    } catch (error) {
-      console.error('Error:', error);
     }
-  };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
-      <button type="submit"
-      onClick={() => {
-        props.deleteRecord(props.record._id);
-      }}
-      >Signup</button>
-      
-    </form>
-  );
+    return (
+        <>
+            <h3>Enter username, email and password</h3>
+            <form>
+                <label>
+                    <input 
+                        type="username" 
+                        name="username"
+                        onChange={handleChange}
+                        placeholder="Username"
+                    />
+                </label>
+                <label>
+                    <input 
+                        type="email" 
+                        name="email"
+                        onChange={handleChange}
+                        placeholder="Email"
+                    />
+                </label>
+                <label>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        onChange={handleChange}
+                        placeholder="Password"
+                    />
+                </label>
+                <button 
+                    type="submit" 
+                    onClick={handleSubmit}
+                >
+                    Sign up
+                </button>
+            </form>
+        </>
+    );
 }
 
 export default Signup;

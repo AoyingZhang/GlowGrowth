@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 function Login() {
-  const [user, setUser] = useState({email:'', password:''});
+  const [user, setUser] = useState({username:'', email:'', password:''});
    
     const handleChange = (e) => {
       setUser({
@@ -13,7 +13,7 @@ function Login() {
     const handleSubmit = async (e) => {
       e.preventDefault()
       console.log(user)
-      const response = await fetch('/api/login', {
+      const response = await fetch('http://localhost:5050/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -30,8 +30,16 @@ function Login() {
 
     return (
         <>
-            <h3>Enter email and password</h3>
+            <h3>Enter username, email and password</h3>
             <form>
+                <label>
+                    <input 
+                        type="username" 
+                        name="username"
+                        onChange={handleChange}
+                        placeholder="Username"
+                    />
+                </label>
                 <label>
                     <input 
                         type="email" 
