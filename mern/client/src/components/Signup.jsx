@@ -3,7 +3,7 @@ import { TextField, Button, Typography, Container, Box, Paper, Alert } from '@mu
 import { Link } from 'react-router-dom';
 
 function Signup() {
-  const [user, setUser] = useState({ email: '', password: '' });
+  const [user, setUser] = useState({ username: '', email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
@@ -41,6 +41,18 @@ function Signup() {
           Sign up
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
+            autoFocus
+            onChange={handleChange}
+          />
           <TextField
             variant="outlined"
             margin="normal"
