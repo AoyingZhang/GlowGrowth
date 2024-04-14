@@ -8,15 +8,12 @@ mongoose.connect('mongodb+srv://admin:admin@loveletter.kw6pyp3.mongodb.net/?retr
 
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
-  password: String
+  password: String,
+  username: { type: String, unique: true },
+  nickname: String
 });
 const User = mongoose.model('User', userSchema);
 
-const usernameSchema = new mongoose.Schema({
-  username: { type: String, unique: true },
-  email: String
-});
-const UserName = mongoose.model('UserName', usernameSchema);
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -36,7 +33,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.post('/api/signup', async (req, res) => {
-  const { username, email, password } = req.body;
+  const { email, password, username, nickname } = req.body;
   if (!email.includes('@')) {
     return res.status(400).send({ message: 'Email is not in a valid format' });
   }
@@ -46,15 +43,13 @@ app.post('/api/signup', async (req, res) => {
       return res.status(400).send({ message: 'Email already registered' });
     }
 
-    const existingUserName = await UserName.findOne({ username });
+    const existingUserName = await User.findOne({ username });
     if (existingUserName) {
       return res.status(400).send({ message: 'Username already exists' });
     }
 
-    const user = new User({ email, password });
-    const userName = new UserName({ email, username });
+    const user = new User({ email, password, username, nickname });
     await user.save();
-    await userName.save();
     res.send({ message: 'SignUp successful' });
   } catch (error) {
     console.error('SignUp Error:', error);
