@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Container, Box, Paper } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 function Signup() {
   const [user, setUser] = useState({email:'', password:''});
@@ -70,6 +71,15 @@ function Signup() {
               sx={{ mt: 3, mb: 2 }}
             >
               Sign up
+            </Button>
+            <Button
+              component={Link}
+              to="/login"
+              fullWidth
+              variant="outlined"
+              sx={{ mt: 1 }}
+            >
+              Already have an account? Log in
             </Button>
           </Box>
         </Paper>
