@@ -6,7 +6,6 @@ mongoose.connect('mongodb+srv://admin:admin@loveletter.kw6pyp3.mongodb.net/?retr
   .catch(err => console.error('MongoDB connection error:', err));
 
 const userSchema = new mongoose.Schema({
-  username: String,
   email: String,
   password: String
 });
@@ -23,7 +22,7 @@ app.get('/test', (req, res) => {
   res.status(200).send('Test route is working');
 });
 app.post('/api/login', async (req, res) => {
-  const { username, email, password } = req.body;
+  const { email, password } = req.body;
 
   // Find user in database
   const user = await User.findOne({ email });
@@ -36,7 +35,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.post('/api/signup', async (req, res) => {
-  const { username, email, password } = req.body;
+  const { email, password } = req.body;
 
   // Check if user already exists
   const existingUser = await User.findOne({ email });
@@ -46,7 +45,7 @@ app.post('/api/signup', async (req, res) => {
   }
 
   // Create new user
-  const user = new User({username, email, password });
+  const user = new User({email, password });
   console.log(user);
   try {
     // Save user to database
