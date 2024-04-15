@@ -62,18 +62,14 @@ app.post('/api/signup', async (req, res) => {
 
 app.get('/api/users/:username/nickname', async (req, res) => {
   const { username } = req.params;
-  //console.log("Received request for username:", username);
   try {
     const user = await User.findOne({ username });
     if (!user) {
-      //console.log('No user found for username:', username);
       res.status(404).json({ message: 'User not found' });
       return;
     }
-    //console.log('Sending nickname for username', username, ':', user.nickname);
     res.json({ nickname: user.nickname });
   } catch (error) {
-    //console.error('Error fetching user:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
