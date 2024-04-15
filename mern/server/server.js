@@ -6,6 +6,7 @@ mongoose.connect('mongodb+srv://admin:admin@loveletter.kw6pyp3.mongodb.net/?retr
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
+//---------------------------------SCHEMAS------------------------------------
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   password: String,
@@ -13,6 +14,12 @@ const userSchema = new mongoose.Schema({
   nickname: String
 });
 const User = mongoose.model('User', userSchema);
+const JournalEntrySchema = new mongoose.Schema({
+  username: String,
+  entry: String,
+  date: String
+});
+const JournalEntry = mongoose.model('JournalEntry', JournalEntrySchema);
 
 
 const PORT = process.env.PORT || 5050;
@@ -20,6 +27,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({ origin: 'http://localhost:5173' }));
 
+//---------------------------------API methods---------------------------------------
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -71,6 +79,17 @@ app.get('/api/users/:username/nickname', async (req, res) => {
     res.json({ nickname: user.nickname });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
+  }
+});
+// Server-side: Example POST route for saving a journal entry
+app.post('/api/journal', async (req, res) => {
+  const { username, entry, date } = req.body;
+  try {
+    const newEntry = new JournalEntry({ username, entry, date });  // Assuming you have a JournalEntry model
+    await newEntry.save();
+    res.status(201).json({ message: 'Entry saved successfully' });
+  } catch (error) {
+    res.status(500).send({ message: 'Failed to save entry' });
   }
 });
 
