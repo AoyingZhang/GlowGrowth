@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Container, Box, Paper, Alert } from '@mui/material';
-import { Link } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom';
 
 function Login() {
   const [user, setUser] = useState({ email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     setUser({
@@ -25,8 +26,10 @@ function Login() {
     });
     console.log(response);
     if (response.ok) {
+      const result = await response.json();
       console.log('Login successful');
-      setErrorMessage(''); // Clear any existing errors
+      setErrorMessage('');
+      navigate(`/${result.username}`);  // Navigate to user's homepage using their username
     } else {
       const result = await response.json(); // Assuming server sends back why login failed
       console.log('Login failed');

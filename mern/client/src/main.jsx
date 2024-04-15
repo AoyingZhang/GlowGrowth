@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import UserHomePage from "./components/UserHomePage";
 import "./index.css";
 
 const router = createBrowserRouter([
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "/app",
     element: <App />,
+  },
+  {
+    path: "/:username",
+    element: <UserHomePage />,  // This should be a component that displays user-specific content
   },
 ]);
 
