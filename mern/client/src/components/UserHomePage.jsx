@@ -1,56 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Typography, Container, Paper, TextField, Button } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Typography, Container, Paper, Button } from '@mui/material';
 
+import Journal from "./Journal";
 function UserHomePage() {
-  const { username } = useParams();
-  const [nickname, setNickname] = useState('');
-  const [entry, setEntry] = useState('');
-  const [message, setMessage] = useState('');
+  const { username } = useParams();  // Retrieve the username from URL parameters
+  const navigate = useNavigate();  // Hook for navigation
+  const [nickname, setNickname] = useState('');  // State to hold the nickname fetched from server
 
-  //get username
   useEffect(() => {
+    // Function to fetch the user's nickname
     async function fetchNickname() {
       try {
         const response = await fetch(`http://localhost:5050/api/users/${username}/nickname`);
+        const contentType = response.headers.get('Content-Type');
         if (!response.ok) {
           throw new Error(`Failed to fetch, status: ${response.status}`);
+        }
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Received non-JSON response');
         }
         const data = await response.json();
         setNickname(data.nickname);
       } catch (error) {
         console.error('Error fetching nickname:', error.message);
-        setNickname('Nickname not found');
+        setNickname('Nickname not found');  // Fallback nickname if fetch fails
       }
     }
     fetchNickname();
-  }, [username]);
+  }, [username]);  // Dependency array to trigger re-fetch when username changes
 
-  const handleEntryChange = (event) => {
-    setEntry(event.target.value);
-  };
-
-  //submit journal
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await fetch('http://localhost:5050/api/journal', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, entry, date: new Date().toISOString().substring(0, 10) }),
-      });
-      if (!response.ok) {
-        throw new Error(`Failed to save entry, status: ${response.status}`);
-      }
-      const result = await response.json();
-      setMessage('Entry saved successfully!');
-      setEntry(''); // Clear the entry field after successful save
-    } catch (error) {
-      console.error('Error saving entry:', error.message);
-      setMessage('Failed to save entry');
-    }
+  const handleJournalClick = () => {
+    navigate(`/journal/${username}`);  // Navigate to the Journal page
   };
 
   return (
@@ -59,30 +40,12 @@ function UserHomePage() {
         <Typography component="h1" variant="h4" sx={{ mb: 2 }}>
           Hello {nickname || username}
         </Typography>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Write your journal entry"
-            multiline
-            rows={4}
-            fullWidth
-            variant="outlined"
-            value={entry}
-            onChange={handleEntryChange}
-            sx={{ mb: 2 }}
-          />
-          <Button type="submit" variant="contained" color="primary">
-            Save Entry
-          </Button>
-          {message && (
-            <Typography color="secondary" sx={{ mt: 2 }}>
-              {message}
-            </Typography>
-          )}
-        </form>
+        <Button variant="contained" color="primary" sx={{ mb: 1 }} onClick={handleJournalClick}>
+          Record Journal
+        </Button>
       </Paper>
     </Container>
   );
-  
 }
 
 export default UserHomePage;

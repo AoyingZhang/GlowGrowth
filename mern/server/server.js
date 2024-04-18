@@ -14,12 +14,20 @@ const userSchema = new mongoose.Schema({
   nickname: String
 });
 const User = mongoose.model('User', userSchema);
-const JournalEntrySchema = new mongoose.Schema({
-  username: String,
-  entry: String,
-  date: String
-});
-const JournalEntry = mongoose.model('JournalEntry', JournalEntrySchema);
+const journalSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  date: { type: String, required: true },
+  mood: String,
+  proud1: String,
+  proud2: String,
+  proud3: String,
+  other: String
+}, { timestamps: true });
+
+// Unique index to ensure username and date combination is unique
+journalSchema.index({ username: 1, date: 1 }, { unique: true });
+
+const Journal = mongoose.model('Journal', journalSchema);
 
 
 const PORT = process.env.PORT || 5050;
@@ -68,6 +76,7 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
+
 app.get('/api/users/:username/nickname', async (req, res) => {
   const { username } = req.params;
   try {
@@ -81,15 +90,22 @@ app.get('/api/users/:username/nickname', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-// Server-side: Example POST route for saving a journal entry
-app.post('/api/journal', async (req, res) => {
-  const { username, entry, date } = req.body;
+//---------------------------------JOURNAL-------------------------------------------
+
+app.post('/api/journals/:username', async (req, res) => {
+  const { username } = req.params;
+  const { date, mood, proud1, proud2, proud3, other } = req.body;
+
   try {
-    const newEntry = new JournalEntry({ username, entry, date });  // Assuming you have a JournalEntry model
+    const newEntry = new Journal({ username, date, mood, proud1, proud2, proud3, other });
     await newEntry.save();
-    res.status(201).json({ message: 'Entry saved successfully' });
+    res.status(201).send({ message: 'Journal entry created successfully.' });
   } catch (error) {
-    res.status(500).send({ message: 'Failed to save entry' });
+    if (error.code === 11000) {
+      res.status(409).send({ message: 'Entry for this date already exists.' });
+    } else {
+      res.status(500).send({ message: 'Failed to create journal entry.' });
+    }
   }
 });
 
