@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Container, Paper } from '@mui/material';
 
@@ -6,7 +6,7 @@ function Journal() {
   const { username } = useParams();
   const navigate = useNavigate();
   const [entry, setEntry] = useState({
-    date: new Date().toISOString().slice(0, 10), // format YYYY-MM-DD
+    date: new Date().toISOString().slice(0, 10),
     mood: '',
     proud1: '',
     proud2: '',
@@ -14,29 +14,59 @@ function Journal() {
     other: ''
   });
 
+  useEffect(() => {
+    const fetchEntry = async () => {
+      try {
+        const response = await fetch(`http://localhost:5050/api/journals/${username}/${entry.date}`);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+          setEntry(data); // Make sure all fields, including _id, are set here
+        }
+      } catch (error) {
+        console.error('Failed to fetch journal entry:', error);
+      }
+    };
+    fetchEntry();
+  }, [username, entry.date]);
+  
   const handleChange = (e) => {
     setEntry({ ...entry, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    var endpoint= '';
+    const method = entry._id ? 'PUT' : 'POST'; // Determine if it's an update or create
+    console.log(method);
+    console.log(entry);
+    if(method=='POST'){
+      endpoint = `http://localhost:5050/api/journals/${username}`;
+    }
+    else{
+      endpoint = `http://localhost:5050/api/journals/${username}/${entry.date}`
+    }
     try {
-      const response = await fetch(`http://localhost:5050/api/journals/${username}`, {
-        method: 'POST',
+      const response = await fetch(endpoint, {
+        method: method,
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(entry)
       });
-      if (response.ok) {
-        alert('Journal entry saved!');
-      } else {
+  
+      if (!response.ok) {
         throw new Error('Failed to save journal entry.');
       }
+  
+      const result = await response.json();
+      alert(result.message);
     } catch (error) {
       alert(error.message);
     }
   };
+  
 
   return (
     <Container component="main" maxWidth="sm">

@@ -109,6 +109,40 @@ app.post('/api/journals/:username', async (req, res) => {
   }
 });
 
+app.get('/api/journals/:username/:date', async (req, res) => {
+  const { username, date } = req.params;
+  try {
+    const entry = await Journal.findOne({ username, date });
+    if (!entry) {
+      return res.status(404).send({ message: 'Entry not found' });
+    }
+    res.json(entry);
+  } catch (error) {
+    res.status(500).send({ message: 'Server error' });
+  }
+});
+
+// New endpoint to handle updates
+app.put('/api/journals/:username/:date', async (req, res) => {
+  const { username, date } = req.params;
+  const updateData = req.body;
+
+  try {
+    const updatedEntry = await Journal.findOneAndUpdate({ username, date }, updateData, { new: true });
+    if (!updatedEntry) {
+      return res.status(404).send({ message: 'Entry not found' });
+    }
+    res.json({ message: 'Journal entry updated successfully.' });
+  } catch (error) {
+    if (error.code === 11000) {
+      res.status(409).send({ message: 'Entry for this date already exists.' });
+    } else {
+      res.status(500).send({ message: 'Failed to update journal entry.' });
+    }
+  }
+});
+
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
