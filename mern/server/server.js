@@ -91,7 +91,7 @@ app.get('/api/users/:username/nickname', async (req, res) => {
   }
 });
 //---------------------------------JOURNAL-------------------------------------------
-
+//save today's journal under certain username to database
 app.post('/api/journals/:username', async (req, res) => {
   const { username } = req.params;
   const { date, mood, proud1, proud2, proud3, other } = req.body;
@@ -109,6 +109,7 @@ app.post('/api/journals/:username', async (req, res) => {
   }
 });
 
+//find the journal with certain username and date
 app.get('/api/journals/:username/:date', async (req, res) => {
   const { username, date } = req.params;
   try {
@@ -122,7 +123,7 @@ app.get('/api/journals/:username/:date', async (req, res) => {
   }
 });
 
-// New endpoint to handle updates
+//update journal under certain username and date
 app.put('/api/journals/:username/:date', async (req, res) => {
   const { username, date } = req.params;
   const updateData = req.body;
@@ -139,6 +140,18 @@ app.put('/api/journals/:username/:date', async (req, res) => {
     } else {
       res.status(500).send({ message: 'Failed to update journal entry.' });
     }
+  }
+});
+
+//display past journals under username
+app.get('/api/journals/:username', async (req, res) => {
+  const { username } = req.params;
+  try {
+    const entries = await Journal.find({ username }).sort({ date: -1 });  // Fetch all journals for the username, sorted by date
+    res.json(entries);
+  } catch (error) {
+    console.error('Error fetching journals:', error);
+    res.status(500).send({ message: 'Server error fetching journals' });
   }
 });
 

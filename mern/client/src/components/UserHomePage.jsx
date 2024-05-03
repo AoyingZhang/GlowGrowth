@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Typography, Container, Paper, Button } from '@mui/material';
-
-import Journal from "./Journal";
+import PastJournals from './PastJournals'
 function UserHomePage() {
   const { username } = useParams();  // Retrieve the username from URL parameters
   const navigate = useNavigate();  // Hook for navigation
@@ -43,6 +42,7 @@ function UserHomePage() {
         <Button variant="contained" color="primary" sx={{ mb: 1 }} onClick={handleJournalClick}>
           Record today's Journal
         </Button>
+        <PastJournals/>
       </Paper>
     </Container>
   );
