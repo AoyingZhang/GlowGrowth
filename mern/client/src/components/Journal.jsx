@@ -84,11 +84,12 @@ function Journal() {
             value={entry.mood}
             onChange={handleChange}
           />
+          Record 3 things you accomplished today...
           <TextField
             margin="normal"
             fullWidth
             name="proud1"
-            label="Proud of (1)"
+            label="1. "
             type="text"
             value={entry.proud1}
             onChange={handleChange}
@@ -97,7 +98,7 @@ function Journal() {
             margin="normal"
             fullWidth
             name="proud2"
-            label="Proud of (2)"
+            label="2. "
             type="text"
             value={entry.proud2}
             onChange={handleChange}
@@ -106,7 +107,7 @@ function Journal() {
             margin="normal"
             fullWidth
             name="proud3"
-            label="Proud of (3)"
+            label="3. "
             type="text"
             value={entry.proud3}
             onChange={handleChange}

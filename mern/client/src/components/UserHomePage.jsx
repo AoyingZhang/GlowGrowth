@@ -41,7 +41,7 @@ function UserHomePage() {
           Hello {nickname || username}
         </Typography>
         <Button variant="contained" color="primary" sx={{ mb: 1 }} onClick={handleJournalClick}>
-          Record Journal
+          Record today's Journal
         </Button>
       </Paper>
     </Container>
