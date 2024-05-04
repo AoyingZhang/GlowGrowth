@@ -6,10 +6,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/server.js",
-    "start-dev": "concurrently \"cd server && node --env-file=config.env server.js\" \"cd client && npm start\"",
-    "build": "npm --prefix client install client && npm --prefix client run build",
-    "postinstall": "npm --prefix client install && npm --prefix client run build && npm --prefix server install"
+    "install-client": "cd client && npm install && npm run build",
+    "install-server": "cd server && npm install",
+    "postinstall": "npm run install-client && npm run install-server"
   },
+  
   "keywords": [],
   "author": "",
   "license": "ISC",
