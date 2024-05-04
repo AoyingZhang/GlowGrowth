@@ -25,18 +25,10 @@ const router = createBrowserRouter([
     path: "/:username",
     element: <UserHomePage />,  // This should be a component that displays user-specific content
   },
-  // {
-  //   path: "/profile/:username",
-  //   element: <Profile />,  // This should be a component that displays user-specific content
-  // },
   {
     path: "/journal/:username",
     element: <Journal />,  // This should be a component that displays user-specific content
   },
-  // {
-  //   path: "/todo/:username",
-  //   element: <Todo />,  // This should be a component that displays user-specific content
-  // },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

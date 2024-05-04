@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Container, Paper } from '@mui/material';
-
+import { API_BASE_URL } from '../config';
 function Journal() {
   const { username } = useParams();
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ function Journal() {
   useEffect(() => {
     const fetchEntry = async () => {
       try {
-        const response = await fetch(`http://localhost:5050/api/journals/${username}/${entry.date}`);
+        const response = await fetch(`${API_BASE_URL}/api/journals/${username}/${entry.date}`);
 
         if (response.ok) {
           const data = await response.json();
@@ -42,10 +42,10 @@ function Journal() {
     console.log(method);
     console.log(entry);
     if(method=='POST'){
-      endpoint = `http://localhost:5050/api/journals/${username}`;
+      endpoint = `${API_BASE_URL}/api/journals/${username}`;
     }
     else{
-      endpoint = `http://localhost:5050/api/journals/${username}/${entry.date}`
+      endpoint = `${API_BASE_URL}/api/journals/${username}/${entry.date}`
     }
     try {
       const response = await fetch(endpoint, {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Container, Box, Paper, Alert } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { API_BASE_URL } from '../config';
 function Login() {
   const [user, setUser] = useState({ email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState('');
@@ -17,7 +17,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(user);
-    const response = await fetch('http://localhost:5050/api/login', {
+    const response = await fetch(`${API_BASE_URL}/api/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Typography, Container, Paper, List, ListItem, ListItemText } from '@mui/material';
-
+import { API_BASE_URL } from './../config';
 function PastJournals() {
   const { username } = useParams();
   const [journals, setJournals] = useState([]);
@@ -9,7 +9,7 @@ function PastJournals() {
   useEffect(() => {
     const fetchJournals = async () => {
       try {
-        const response = await fetch(`http://localhost:5050/api/journals/${username}`);
+        const response = await fetch(`${API_BASE_URL}/api/journals/${username}`);
         if (response.ok) {
           const data = await response.json();
           setJournals(data);
@@ -35,7 +35,7 @@ function PastJournals() {
             <ListItem key={index} divider>
               <ListItemText
                 primary={`Date: ${journal.date} - Mood: ${journal.mood}`}
-                secondary={`Accomplishments: 
+                secondary={`My accomplishments of the day: 
                 1. ${journal.proud1} \n
                 2. ${journal.proud2} \n
                 3. ${journal.proud3}`}

@@ -11,7 +11,7 @@ function UserHomePage() {
     // Function to fetch the user's nickname
     async function fetchNickname() {
       try {
-        const response = await fetch(`http://localhost:5050/api/users/${username}/nickname`);
+        const response = await fetch(`${API_BASE_URL}/api/users/${username}/nickname`);
         const contentType = response.headers.get('Content-Type');
         if (!response.ok) {
           throw new Error(`Failed to fetch, status: ${response.status}`);
