@@ -4,13 +4,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "start": "node server/server.js",
-    "install-client": "cd client && npm install && npm run build",
-    "install-server": "cd server && npm install",
-    "postinstall": "npm run install-client && npm run install-server"
-  },
-  
+    "scripts": {
+      "start": "node server/server.js",
+      "install-client": "cd client && npm install && npm run build",
+      "build-client": "cd client && npm run build",
+      "install-server": "cd server && npm install",
+      "build": "npm run install-client && npm run install-server"
+    },
   "keywords": [],
   "author": "",
   "license": "ISC",
