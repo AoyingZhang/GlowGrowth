@@ -2,9 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Environment configuration
 import 'dotenv/config';
+
+// Path setup for ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
@@ -18,14 +23,13 @@ app.use(cors({
   origin: 'https://glowgrowth.onrender.com' // Change this to your deployed client URL or '*' for open access
 }));
 
-// MongoDB Schemas
+// MongoDB Schemas and Models
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   password: String,
   username: { type: String, unique: true },
   nickname: String
 });
-
 const User = mongoose.model('User', userSchema);
 
 const journalSchema = new mongoose.Schema({
@@ -37,7 +41,6 @@ const journalSchema = new mongoose.Schema({
   proud3: String,
   other: String
 }, { timestamps: true });
-
 journalSchema.index({ username: 1, date: 1 }, { unique: true });
 const Journal = mongoose.model('Journal', journalSchema);
 
@@ -85,6 +88,7 @@ app.get('/api/journals/:username', async (req, res) => {
 // If you want to serve the React build
 app.use(express.static(path.join(__dirname, '../client/build')));
 
+// The "catchall" handler for any other GET request not handled by above routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
