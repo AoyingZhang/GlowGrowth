@@ -36,8 +36,8 @@ function UserHomePage() {
   return (
     <Container component="main" maxWidth="sm">
       <Paper elevation={6} sx={{ mt: 8, p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography component="h1" variant="h4" sx={{ mb: 2 }}>
-          Hello {nickname || username}
+        <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
+          Hello
         </Typography>
         <Button variant="contained" color="primary" sx={{ mb: 1 }} onClick={handleJournalClick}>
           Record today's Journal
