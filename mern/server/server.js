@@ -44,46 +44,125 @@ const journalSchema = new mongoose.Schema({
 journalSchema.index({ username: 1, date: 1 }, { unique: true });
 const Journal = mongoose.model('Journal', journalSchema);
 
-// API routes
+//---------------------------------API methods---------------------------------------
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (user && user.password === password) {
-    res.status(200).json({ message: 'Login successful', username: user.username });
+    res.status(200).json({
+      message: 'Login successful',
+      username: user.username  // Make sure to send back the username
+    });
+  } else if (user) {
+    res.status(401).send({ message: 'Password incorrect' });
   } else {
-    res.status(401).send({ message: user ? 'Password incorrect' : 'User does not exist' });
+    res.status(401).send({ message: 'User does not exist' });
   }
 });
 
 app.post('/api/signup', async (req, res) => {
   const { email, password, username, nickname } = req.body;
+  if (!email.includes('@')) {
+    return res.status(400).send({ message: 'Email is not in a valid format' });
+  }
   try {
     const existingUser = await User.findOne({ email });
-    const existingUserName = await User.findOne({ username });
     if (existingUser) {
-      res.status(400).send({ message: 'Email already registered' });
-    } else if (existingUserName) {
-      res.status(400).send({ message: 'Username already exists' });
-    } else {
-      await new User({ email, password, username, nickname }).save();
-      res.send({ message: 'SignUp successful' });
+      return res.status(400).send({ message: 'Email already registered' });
     }
+
+    const existingUserName = await User.findOne({ username });
+    if (existingUserName) {
+      return res.status(400).send({ message: 'Username already exists' });
+    }
+
+    const user = new User({ email, password, username, nickname });
+    await user.save();
+    res.send({ message: 'SignUp successful' });
   } catch (error) {
     console.error('SignUp Error:', error);
     res.status(500).send({ message: 'Error signing up' });
   }
 });
 
+
+app.get('/api/users/:username/nickname', async (req, res) => {
+  const { username } = req.params;
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+    res.json({ nickname: user.nickname });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+//---------------------------------JOURNAL-------------------------------------------
+//save today's journal under certain username to database
+app.post('/api/journals/:username', async (req, res) => {
+  const { username } = req.params;
+  const { date, mood, proud1, proud2, proud3, other } = req.body;
+
+  try {
+    const newEntry = new Journal({ username, date, mood, proud1, proud2, proud3, other });
+    await newEntry.save();
+    res.status(201).send({ message: 'Journal entry created successfully.' });
+  } catch (error) {
+    if (error.code === 11000) {
+      res.status(409).send({ message: 'Entry for this date already exists.' });
+    } else {
+      res.status(500).send({ message: 'Failed to create journal entry.' });
+    }
+  }
+});
+
+//find the journal with certain username and date
+app.get('/api/journals/:username/:date', async (req, res) => {
+  const { username, date } = req.params;
+  try {
+    const entry = await Journal.findOne({ username, date });
+    if (!entry) {
+      return res.status(404).send({ message: 'Entry not found' });
+    }
+    res.json(entry);
+  } catch (error) {
+    res.status(500).send({ message: 'Server error' });
+  }
+});
+
+//update journal under certain username and date
+app.put('/api/journals/:username/:date', async (req, res) => {
+  const { username, date } = req.params;
+  const updateData = req.body;
+
+  try {
+    const updatedEntry = await Journal.findOneAndUpdate({ username, date }, updateData, { new: true });
+    if (!updatedEntry) {
+      return res.status(404).send({ message: 'Entry not found' });
+    }
+    res.json({ message: 'Journal entry updated successfully.' });
+  } catch (error) {
+    if (error.code === 11000) {
+      res.status(409).send({ message: 'Entry for this date already exists.' });
+    } else {
+      res.status(500).send({ message: 'Failed to update journal entry.' });
+    }
+  }
+});
+
+//display past journals under username
 app.get('/api/journals/:username', async (req, res) => {
   const { username } = req.params;
   try {
-    const entries = await Journal.find({ username }).sort({ date: -1 });
+    const entries = await Journal.find({ username }).sort({ date: -1 });  // Fetch all journals for the username, sorted by date
     res.json(entries);
   } catch (error) {
     console.error('Error fetching journals:', error);
     res.status(500).send({ message: 'Server error fetching journals' });
   }
-});
+})
 
 // If you want to serve the React build
 app.use(express.static(path.join(__dirname, '../client/build')));
