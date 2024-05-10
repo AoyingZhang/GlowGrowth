@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Container, Box, Paper, Alert } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 function Signup() {
   const [user, setUser] = useState({ nickname: '', username: '', email: '', password: '' });
