@@ -7,7 +7,7 @@ function Signup() {
   const [user, setUser] = useState({ nickname: '', username: '', email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
+  const navigate = useNavigate(); 
   const handleChange = (e) => {
     setUser({
       ...user,
