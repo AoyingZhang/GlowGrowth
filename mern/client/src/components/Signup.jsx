@@ -29,8 +29,8 @@ function Signup() {
     if (response.ok) {
       console.log('SignUp successful');
       setErrorMessage('');
-      setSuccessMessage('Sign up successful, directing you to the login page.');
-      navigate('/login'); 
+      setSuccessMessage('Sign up successful, please go to the login page.');
+      //navigate('/login'); 
     } else {
       const result = await response.json();
       console.log('SignUp failed');
