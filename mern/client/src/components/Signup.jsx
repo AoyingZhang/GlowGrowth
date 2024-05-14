@@ -6,6 +6,7 @@ import { API_BASE_URL } from '../config';
 function Signup() {
   const [user, setUser] = useState({ nickname: '', username: '', email: '', password: '' });
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleChange = (e) => {
     setUser({
@@ -27,11 +28,14 @@ function Signup() {
 
     if (response.ok) {
       console.log('SignUp successful');
-      setErrorMessage(''); // Clear any existing error messages
+      setErrorMessage('');
+      setSuccessMessage('Sign up successful, directing you to the login page.');
+      navigate('/login'); 
     } else {
-      const result = await response.json(); // Assuming server sends back why signup failed
+      const result = await response.json();
       console.log('SignUp failed');
-      setErrorMessage(result.message || 'Signup failed'); // Set the error message from response
+      setErrorMessage(result.message || 'Signup failed');
+      setSuccessMessage(''); // Clear success message in case of failure
     }
   };
 
@@ -111,6 +115,11 @@ function Signup() {
           {errorMessage && (
             <Alert severity="error" sx={{ mt: 2 }}>
               {errorMessage}
+            </Alert>
+          )}
+          {successMessage && (
+            <Alert severity="success" sx={{ mt: 2 }}>
+              {successMessage}
             </Alert>
           )}
         </Box>
