@@ -7,4 +7,3 @@ CRUD operations to manage user entries and leveraged HTTP methods for server-cli
 • Designed and implemented a RESTful API architecture, allowing for scalable and maintainable server-side logic
 
 Deployed here: 
-https://glowgrowth.onrender.com/
