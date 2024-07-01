@@ -5,3 +5,5 @@ CRUD operations to manage user entries and leveraged HTTP methods for server-cli
 • Improved user engagement by responsive layouts and aesthetic elements using Material-UI and Tailwind CSS
 
 • Designed and implemented a RESTful API architecture, allowing for scalable and maintainable server-side logic
+
+Deployed here: 
